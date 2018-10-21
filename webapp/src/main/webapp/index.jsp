@@ -1,4 +1,3 @@
-
 <%@page import="java.util.*,java.nio.charset.StandardCharsets,java.nio.file.*,java.io.*"%> 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,26 +16,35 @@
         <h1>Data usage monitor</h1>
         <div id="viz"></div>
         <%
+                ServletContext sc = request.getServletContext();
+                String logPath = sc.getInitParameter("DataUsageLog");
+                //if (logPath != null)
+                //    out.write(logPath);
+                //else 
+                //    out.write("No log file!");
+                
+                String data = "";
                 List<String> lines = Collections.emptyList();  
-                lines = Files.readAllLines(Paths.get("C:\\Users\\ms843\\github\\ee-data-monitor\\webapp\\src\\main\\webapp\\data_usage.csv"), StandardCharsets.UTF_8); 
+                lines = Files.readAllLines(Paths.get(logPath), StandardCharsets.UTF_8); 
                 Iterator<String> itr = lines.iterator();
                 String[] firstRow = itr.next().split(",");
-                out.write("[");
+                data += "[";
                 String row[] = itr.next().split(",");
-                out.write("{" + firstRow[0]+" :\"" +row[0] + "\"");
+                data += "{" + firstRow[0]+" :\"" +row[0] + "\"";
                     for (int i=1; i<row.length; i++){
-                        out.write(", " + firstRow[i]+" :\"" +row[i] + "\"");
+                        data += ", " + firstRow[i]+" :\"" +row[i] + "\"";
                     }
-                out.write("}");
+                data += "}";
                 while (itr.hasNext()){
                     row = itr.next().split(",");
-                    out.write(",{" + firstRow[0]+" :\"" +row[0] + "\"");
+                    data += ",{" + firstRow[0]+" :\"" +row[0] + "\"";
                     for (int i=1; i<row.length; i++){
-                        out.write(", " + firstRow[i]+" :\"" +row[i] + "\"");
+                        data += ", " + firstRow[i]+" :\"" +row[i] + "\"";
                     }
-                    out.write("}");
+                    data += "}";
                 }
-                out.write("]"); 
+                data += "]"; 
+                //out.write("data=" + data);
         %>
         <script type="text/javascript">
 
@@ -71,13 +79,15 @@
                     "translate(" + margin.left + "," + margin.top + ")");
 
             // Get the data
-            d3.csv("data_usage.csv", function(error, data) {
-                if (error) throw error;
-
+            //d3.csv("data_usage.csv", function(error, data) {
+            //    if (error) throw error;
+            // JSP value inserted here.
+            var data= <%= data %>;
+            {
                 // format the data
                 data.forEach(function(d) {
                     d.date = parseTime(d.date);
-                    d.close = d.close;
+                    d.close = Number(d.close);
                 });
 
                 // Scale the range of the data
@@ -99,7 +109,7 @@
                 svg.append("g")
                     .call(d3.axisLeft(y));
 
-            });
+            }
         </script>
     </body>
 </html>
