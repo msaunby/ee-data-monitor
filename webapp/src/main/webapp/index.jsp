@@ -27,7 +27,8 @@
                 List<String> lines = Collections.emptyList();  
                 lines = Files.readAllLines(Paths.get(logPath), StandardCharsets.UTF_8); 
                 Iterator<String> itr = lines.iterator();
-                String[] firstRow = itr.next().split(",");
+                //String[] firstRow = itr.next().split(",");
+                String[] firstRow = {"date","close","limit"};
                 data += "[";
                 String row[] = itr.next().split(",");
                 data += "{" + firstRow[0]+" :\"" +row[0] + "\"";
@@ -59,6 +60,10 @@
             // parse the date / time
             // See https://github.com/d3/d3-time-format
             var parseTime = d3.utcParse("%Y-%m-%d %H:%M:%S.%L");
+            var parseDataQty = function( s ){
+                var val = Number(s.replace('GB',''));
+                return val;
+            }
 
             // set the ranges
             var x = d3.scaleTime().range([0, width]);
@@ -87,7 +92,7 @@
                 // format the data
                 data.forEach(function(d) {
                     d.date = parseTime(d.date);
-                    d.close = Number(d.close);
+                    d.close = parseDataQty(d.close);
                 });
 
                 // Scale the range of the data

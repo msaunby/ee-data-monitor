@@ -7,7 +7,7 @@
 
   <context-param>
     <param-name>DataUsageLog</param-name>
-    <param-value>C:\\Users\\ms843\\github\\ee-data-monitor\\webapp\\src\\main\\webapp\\data_usage.csv</param-value>
+    <param-value>/var/tmp/data_usage.csv</param-value>
   </context-param>
 
 <!-- Can map JSP servlet to another URL like this.. -->  
